@@ -1,0 +1,37 @@
+st_demand=[2,4,4,10]
+st_weight=[4,2.5,1,0.5]
+st_power=[0,0,0,0]
+cap=0
+n=0
+br=0
+init_cap=0
+remain_cap=0
+
+
+class mm_wf():
+    cap=int(input("Available capacity:"))
+    init_cap=cap
+    while cap>0:
+        for i in range(4):
+            if st_power[i]<st_demand[i]:
+                n+=st_weight[i]
+        print("Overall weight:",n)
+        br=cap/n
+        print("Capacity/weight",br)
+        cap=0
+        n=0
+        
+        for i in range(4):
+            if st_power[i]<st_demand[i]:
+                st_power[i]+=st_weight[i]*br
+                if st_power[i]>st_demand[i]:
+                    cap+=st_power[i]-st_demand[i]
+                    st_power[i]=st_demand[i]
+        remain_cap=init_cap-(st_power[0]+st_power[1]+st_power[2]+st_power[3])
+
+if __name__=='__main__':
+    mm_wf()
+    print("Result:")
+    for i in range(4):
+        print("Power:",i, st_power[i])
+    print("Remaining capacity:",remain_cap)
