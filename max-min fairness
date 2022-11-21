@@ -7,7 +7,7 @@ br=0
 init_cap=0
 remain_cap=0
 
-
+# max-min fairness(weighted)
 class mm_wf():
     cap=int(input("Available capacity:"))
     init_cap=cap
