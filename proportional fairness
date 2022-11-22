@@ -1,0 +1,33 @@
+import numpy as np
+import pandas as pd
+
+# Test proportional fairness algorithm
+# arg max_i{r_(i, n+1)/Theta_n}
+
+num_user = 10 # 定义用户数
+run_time = 20 # 定义调度次数
+
+# fix_data_rate = [5;5;5;5;10;10;10;10;20;50]
+# d = 0.01 * np.rand(num_user, 1)
+d = 0.001 * np.ones((num_user, 1))
+data_rate = np.random.randint(5, 50, size=(num_user, run_time)) # 每个用户在每个时刻都有一个数据速率要求：5-50之间的随机整数
+assignments = np.zeros((num_user, run_time+1)) # 每个用户值每个时刻是否分配的矩阵，为0表示不分配，为1表示分配
+# possible_assignments = np.eye(num_user)
+print("用户的数据速率为：\n", data_rate)
+for i in range(run_time):
+    if(i==0): 
+        current_throughput = np.zeros((num_user, 0)) # 初始时刻，用户吞吐量为0
+    else:
+        current_throughput = data_rate[:,0:i-1] * assignments[:,0:i-1] # 非初始时刻，已有用户被分配，重新计算吞吐量：历史速率和分配变量的乘积
+        current_throughput = np.sum(current_throughput,axis=1) / (i-1)
+        current_throughput = current_throughput.reshape(num_user, 1)
+        print("当前调用次数为：", i)
+        print("当前调用时用户的吞吐量为：\n",current_throughput)
+    temp = data_rate[:,i].reshape(num_user, 1) / (d + current_throughput)
+    
+    print("当前调用时用户的优先级为：\n", temp)
+    
+    temp = temp.tolist()
+    idx = temp.index(max(temp))
+    print("当前调用时优先级最大的用户为：", idx)
+    assignments[idx,i] = 1
